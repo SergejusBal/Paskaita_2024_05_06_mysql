@@ -12,17 +12,10 @@ public class Main {
         final String URL = "jdbc:mysql://localhost:3306/java_data";
         final String USERNAME = "root";
         final String PASSWORD = "TestPassword";
+        final String KLIENTUPATCH = "C://Users//Sergejus//IdeaProjects//Paskaita_2024_05_06_mysql//src//main//java//org//example//Failai//klientai.csv";
 
-        //new Vizitas();
+
         SQL_Manager_IMP sQL_Manager_IMP = new SQL_Manager_IMP(URL, USERNAME, PASSWORD);
-        //sQL_Manager_IMP.insertKlientas(new Klientas());
-        //sQL_Manager_IMP.insertPaslauga(new Paslauga());
-       // sQL_Manager_IMP.insertDarbuotojas(new Darbuotojas());
-        System.out.println(sQL_Manager_IMP.getKlientoVizitas());
-       // sQL_Manager_IMP.mokejimas(sQL_Manager_IMP.pasirinkiteDarbuotoja(),sQL_Manager_IMP.pasirinktiPaslauga(),sQL_Manager_IMP.pasirinktiKlienta(),20.0);
-
-
-
 
         boolean dirba = true;
         while (dirba){
@@ -32,8 +25,15 @@ public class Main {
             System.out.println("Klientų sąrašas: (2)");
             System.out.println("Darbuotojų sąrašas: (3)");
             System.out.println("Mokejimųs sąrašas: (4)");
-            System.out.println("Gauti paslaugą (5)");
-            System.out.println("Baigti darbą");
+            System.out.println("Vizitų sąrašas (5)");
+            System.out.println("Užregistruoti vizitą (6)");
+            System.out.println("Užregistruoti klientą (7)");
+            System.out.println("Užregistruoti darbuotoją (8)");
+            System.out.println("Užregistruoti paslaugą (9)");
+            System.out.println("Atlikti vizita (10)");
+            System.out.println("Eksportuoti klientus į CSV (11)");
+            System.out.println("Importuoti klientus iš CSV (12)");
+            System.out.println("Baigti darbą (13)");
             int verte = Custom.nuskaitytiIntVerteCon();
             switch (verte){
                 case 1:
@@ -63,12 +63,40 @@ public class Main {
                     }
                     break;
                 case 5:
+                    List<Vizitas> vizitasList = sQL_Manager_IMP.getVizitaiList();
+                    for (Vizitas v : vizitasList){
+                        System.out.println(v);
+                    }
+                    break;
                 case 6:
+                    sQL_Manager_IMP.insertVizitas(new Vizitas());
+                    break;
                 case 7:
+                    sQL_Manager_IMP.insertKlientas(new Klientas());
+                    break;
                 case 8:
+                    sQL_Manager_IMP.insertDarbuotojas(new Darbuotojas());
+                    break;
                 case 9:
+                    Paslauga paslauga = new Paslauga();
+                    sQL_Manager_IMP.insertPaslauga(paslauga);
+                    break;
                 case 10:
+                    sQL_Manager_IMP.mokejimas(sQL_Manager_IMP.pasirinkiteDarbuotoja(),sQL_Manager_IMP.pasirinktiVizita());
+                    break;
                 case 11:
+                    sQL_Manager_IMP.irasytiICSV(KLIENTUPATCH);
+                    System.out.println("Klientai sukelti į SCV.");
+                    break;
+                case 12:
+                    List<Klientas> importuotasList = sQL_Manager_IMP.importuotiIsCSV(KLIENTUPATCH);
+                    for (Klientas v : importuotasList){
+                        System.out.println(v);
+                    }
+                    break;
+                case 13:
+                    dirba = false;
+                    break;
                 default:
                     System.out.println("Tokios operacijos nera");
             }

@@ -1,9 +1,11 @@
 package org.example.DuombaziuOjektai;
 
+import java.time.format.DateTimeFormatter;
+
 public class Mokejimas extends DataBaseTableObject{
     private int darbuotojo_id;
     private int kliento_Id;
-    private int paslauga;
+    private int paslauga_id;
     private double mokejimoSuma;
     public Mokejimas(int id) {
         super(0);
@@ -13,7 +15,7 @@ public class Mokejimas extends DataBaseTableObject{
         super(id);
         this.darbuotojo_id = darbuotojo_id;
         this.kliento_Id = kliento_Id;
-        this.paslauga = paslauga;
+        this.paslauga_id = paslauga_id;
         this.mokejimoSuma = mokejimoSuma;
     }
 
@@ -26,7 +28,7 @@ public class Mokejimas extends DataBaseTableObject{
     }
 
     public int getPaslauga() {
-        return paslauga;
+        return paslauga_id;
     }
 
     public double getMokejimoSuma() {
@@ -41,11 +43,20 @@ public class Mokejimas extends DataBaseTableObject{
         this.kliento_Id = kliento_Id;
     }
 
-    public void setPaslauga(int paslauga) {
-        this.paslauga = paslauga;
+    public void setPaslauga_id(int paslauga_id) {
+        this.paslauga_id = paslauga_id;
     }
 
     public void setMokejimoSuma(double mokejimoSuma) {
         this.mokejimoSuma = mokejimoSuma;
+    }
+
+    @Override
+    public String toString() {
+        return  "Mokejimo ID: " + super.getId() + " *** " +
+                "Kliento ID: " + kliento_Id + " *** " +
+                "Darbuotojo_ID: " + darbuotojo_id + " *** " +
+                "Paslaugos ID: " + paslauga_id + " *** " +
+                "Mokejimo suma: " + mokejimoSuma;
     }
 }

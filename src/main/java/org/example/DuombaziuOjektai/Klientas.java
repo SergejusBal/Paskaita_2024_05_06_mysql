@@ -105,6 +105,10 @@ public class Klientas extends DataBaseTableObject {
         return registracijos_data;
     }
 
+    public String toCSVString(){
+        return String.format("%d,%s,%s,%s,%s,%s", super.getId(), this.vardas,this.pavarde,this.gimimo_data.toString(), this.registracijos_data, this.VIP);
+    }
+
     @Override
     public String toString() {
         return  "Kliento id: " + super.getId() + " *** " +

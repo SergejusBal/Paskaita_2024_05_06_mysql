@@ -21,14 +21,28 @@ public class Paslauga extends DataBaseTableObject {
 
     private void setValues(){
         scPaslauga();
+        scKaina();
     }
-    public void scPaslauga() {
+    private void scPaslauga() {
         System.out.println("Įveskite paslaugą:");
         this.paslauga = Custom.nuskaitytiStringVerteCon();
     }
 
+    private void scKaina(){
+        System.out.println("Įveskite kaina:");
+        this.kaina = Custom.nuskaitytiDoubleVerteCon();
+    }
+
     public void setPaslauga(String paslauga) {
         this.paslauga = paslauga;
+    }
+
+    public void setKaina(double kaina) {
+        this.kaina = kaina;
+    }
+
+    public double getKaina() {
+        return kaina;
     }
 
     public String getPaslauga() {
