@@ -17,6 +17,8 @@ public class Main {
 
         SQL_Manager_IMP sQL_Manager_IMP = new SQL_Manager_IMP(URL, USERNAME, PASSWORD);
 
+
+
         boolean dirba = true;
         while (dirba){
             System.out.println("*********************************************************************");
@@ -25,15 +27,20 @@ public class Main {
             System.out.println("Klientų sąrašas: (2)");
             System.out.println("Darbuotojų sąrašas: (3)");
             System.out.println("Mokejimųs sąrašas: (4)");
-            System.out.println("Vizitų sąrašas (5)");
-            System.out.println("Užregistruoti vizitą (6)");
-            System.out.println("Užregistruoti klientą (7)");
-            System.out.println("Užregistruoti darbuotoją (8)");
-            System.out.println("Užregistruoti paslaugą (9)");
-            System.out.println("Atlikti vizita (10)");
-            System.out.println("Eksportuoti klientus į CSV (11)");
-            System.out.println("Importuoti klientus iš CSV (12)");
-            System.out.println("Baigti darbą (13)");
+            System.out.println("Vizitų sąrašas: (5)");
+            System.out.println("Gauti artimiausia vizita: (6)");
+            System.out.println("Gauti artimiausia kliento vizita: (7)");
+            System.out.println("Pašalinti vizitą: (8)");
+            System.out.println("Užregistruoti vizitą: (9)");
+            System.out.println("Užregistruoti klientą: (10)");
+            System.out.println("Užregistruoti darbuotoją: (11)");
+            System.out.println("Užregistruoti paslaugą: (12)");
+            System.out.println("Atlikti vizitą/mokėjimą: (13)");
+            System.out.println("Eksportuoti klientus į CSV: (14)");
+            System.out.println("Importuoti klientus iš CSV: (15)");
+            System.out.println("spausdinti mokėjimų sumą ir did. maž vertes. (16)");
+            System.out.println("Artimiausias vizitas ir nurodytas klientas. (17)");
+            System.out.println("Baigti darbą: (18)");
             int verte = Custom.nuskaitytiIntVerteCon();
             switch (verte){
                 case 1:
@@ -55,7 +62,6 @@ public class Main {
                         System.out.println(k);
                     }
                     break;
-
                 case 4:
                     List<Mokejimas> mokejimuListas = sQL_Manager_IMP.getMokejimuList();
                     for (Mokejimas k : mokejimuListas){
@@ -69,36 +75,56 @@ public class Main {
                     }
                     break;
                 case 6:
-                    sQL_Manager_IMP.insertVizitas(new Vizitas());
+                    System.out.println(sQL_Manager_IMP.getArtimiusiasVizitas());
                     break;
                 case 7:
-                    sQL_Manager_IMP.insertKlientas(new Klientas());
+                    System.out.println(sQL_Manager_IMP.getKlientoVizitas());
                     break;
                 case 8:
-                    sQL_Manager_IMP.insertDarbuotojas(new Darbuotojas());
+                    sQL_Manager_IMP.cancelVizitas();
                     break;
                 case 9:
+                    sQL_Manager_IMP.insertVizitas(new Vizitas());
+                    break;
+                case 10:
+                    sQL_Manager_IMP.insertKlientas(new Klientas());
+                    break;
+                case 11:
+                    sQL_Manager_IMP.insertDarbuotojas(new Darbuotojas());
+                    break;
+                case 12:
                     Paslauga paslauga = new Paslauga();
                     sQL_Manager_IMP.insertPaslauga(paslauga);
                     break;
-                case 10:
+                case 13:
                     sQL_Manager_IMP.mokejimas(sQL_Manager_IMP.pasirinkiteDarbuotoja(),sQL_Manager_IMP.pasirinktiVizita());
                     break;
-                case 11:
+                case 14:
                     sQL_Manager_IMP.irasytiICSV(KLIENTUPATCH);
                     System.out.println("Klientai sukelti į SCV.");
                     break;
-                case 12:
+                case 15:
                     List<Klientas> importuotasList = sQL_Manager_IMP.importuotiIsCSV(KLIENTUPATCH);
                     for (Klientas v : importuotasList){
                         System.out.println(v);
                     }
                     break;
-                case 13:
+                case 16:
+                    System.out.println("Makėjimų suma:");
+                    System.out.println(sQL_Manager_IMP.getMokejimuSuma());
+                    System.out.println("Mažiausias mokėjimas:");
+                    System.out.println(sQL_Manager_IMP.getMinMokejimas());
+                    System.out.println("Didžiausias mokėjimas:");
+                    System.out.println(sQL_Manager_IMP.getMaxMokejimas());
+                    break;
+                case 17:
+                    sQL_Manager_IMP.atspauzdintiVizita();
+                    break;
+                case 18:
                     dirba = false;
                     break;
                 default:
-                    System.out.println("Tokios operacijos nera");
+                    System.out.println("Tokios operacijos nėra.");
             }
 
         }

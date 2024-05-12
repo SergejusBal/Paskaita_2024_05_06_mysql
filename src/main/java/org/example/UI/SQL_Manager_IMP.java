@@ -80,6 +80,71 @@ public class SQL_Manager_IMP implements SQL_Manager {
         return darbuotojasList;
     }
 
+    public double getMokejimuSuma(){
+
+        String sql = "SELECT SUM(mokejimo_suma) AS suma FROM java_data.mokejimai;";
+        Connection connection;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        double suma;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+
+            resultSet.next();
+            suma = resultSet.getDouble("suma");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return suma;
+    }
+
+    public double getMinMokejimas(){
+
+        String sql = "SELECT MIN(mokejimo_suma) AS min FROM java_data.mokejimai;";
+        Connection connection;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        double min;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+
+            resultSet.next();
+            min = resultSet.getDouble("min");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return min;
+    }
+
+    public double getMaxMokejimas(){
+
+        String sql = "SELECT MAX(mokejimo_suma) AS max FROM java_data.mokejimai;";
+        Connection connection;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        double max;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+
+            resultSet.next();
+            max = resultSet.getDouble("max");
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return max;
+    }
+
     public List<Paslauga> getPaslauguList(){
         List<Paslauga> paslaugaList = new ArrayList<>();
 
@@ -260,6 +325,40 @@ public class SQL_Manager_IMP implements SQL_Manager {
 
     }
 
+    public void atspauzdintiVizita(){
+        Vizitas vizitas  = getArtimiusiasVizitas();
+        Klientas klientas;
+        int klientoID = vizitas.getKlientoID();
+
+        String sql = "SELECT * FROM klientai WHERE kliento_id = ?;";
+        Connection connection;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            statement = connection.prepareStatement(sql,PreparedStatement.RETURN_GENERATED_KEYS);
+            statement.setInt(1,klientoID);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            int kliento_id = resultSet.getInt("kliento_id");
+            String vardas = resultSet.getString("vardas");
+            String pavarde = resultSet.getString("pavarde");
+            String gimimo_data = resultSet.getString("gimimo_data");
+            String registracijos_data = resultSet.getString("registracijos_data");
+            boolean VIP = resultSet.getBoolean("VIP");
+
+            klientas = new Klientas(kliento_id,vardas,pavarde, LocalDate.parse(gimimo_data, DateTimeFormatter.ofPattern("yyyy-MM-dd")),registracijos_data,VIP);
+            System.out.println("Artimiausias vizitas:");
+            System.out.println(vizitas);
+            System.out.println("Klientas:");
+            System.out.println(klientas);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public Vizitas getKlientoVizitas(){
 
         int pasirinktasKlientoID = pasirinktiKlienta().getId();
@@ -361,7 +460,6 @@ public class SQL_Manager_IMP implements SQL_Manager {
             throw new RuntimeException(e);
         }
         System.out.println(paslauga);
-
 }
 
     @Override
@@ -426,39 +524,39 @@ public class SQL_Manager_IMP implements SQL_Manager {
         String sql = "INSERT INTO mokejimai (kliento_id, darbuotojo_id, paslaugos_id, mokejimo_suma )\n" +
                 "VALUES (?,?,?,?);";
         Connection connection;
-        PreparedStatement statement = null;
+        PreparedStatement statement;
 
-        {
-            try {
-                connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-                statement = connection.prepareStatement(sql);
-                statement.setInt(1, klientas.getId());
-                statement.setInt(2, darbuotojas.getId());;
-                statement.setInt(3, paslauga.getId());
-                statement.setDouble(4,suma);
-                statement.executeUpdate();
 
-                System.out.println("Mokejimas Ivestas");
-                System.out.println(paslauga);
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, klientas.getId());
+            statement.setInt(2, darbuotojas.getId());;
+            statement.setInt(3, paslauga.getId());
+            statement.setDouble(4,suma);
+            statement.executeUpdate();
 
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            System.out.println("Mokejimas Ivestas");
+            System.out.println(paslauga);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
     }
 
     public void mokejimas(Darbuotojas darbuotojas, Vizitas vizitas){
 
-        String sql =    "SELECT v.kliento_id, v.paslauga_id,p.paslaugos_kaina FROM vizitai v " +
+        String sql =    "SELECT v.kliento_id, v.paslauga_id,p.paslaugos_kaina, VIP FROM vizitai v " +
                         "LEFT JOIN paslaugos_kaina p " +
                         "ON p.paslauga_id =  v.paslauga_id " +
+                        "INNER JOIN klientai k  " +
+                        "ON k.kliento_id = v.kliento_id " +
                         "WHERE v.vizitai_id = ?;";
 
         int kliento_ID;
         int paslauga_id;
         double paslaugos_kaina;
-
+        Boolean arVIP;
         Connection connection;
         PreparedStatement statement;
         ResultSet resultSet;
@@ -473,6 +571,7 @@ public class SQL_Manager_IMP implements SQL_Manager {
             kliento_ID = resultSet.getInt("kliento_id");
             paslauga_id = resultSet.getInt("paslauga_id");
             paslaugos_kaina = resultSet.getDouble("paslaugos_kaina");
+            arVIP = resultSet.getBoolean("VIP");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -487,7 +586,8 @@ public class SQL_Manager_IMP implements SQL_Manager {
             statement.setInt(1, kliento_ID);
             statement.setInt(2, darbuotojas.getId());
             statement.setInt(3, paslauga_id);
-            statement.setDouble(4, paslaugos_kaina);
+            if(arVIP) statement.setDouble(4, paslaugos_kaina*0.75);
+            else statement.setDouble(4, paslaugos_kaina);
             statement.executeUpdate();
             System.out.println("Mokejimas įvestas:");
 
