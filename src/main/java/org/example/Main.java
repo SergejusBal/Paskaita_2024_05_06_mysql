@@ -38,8 +38,8 @@ public class Main {
             System.out.println("Atlikti vizitą/mokėjimą: (13)");
             System.out.println("Eksportuoti klientus į CSV: (14)");
             System.out.println("Importuoti klientus iš CSV: (15)");
-            System.out.println("spausdinti mokėjimų sumą ir did. maž vertes. (16)");
-            System.out.println("Artimiausias vizitas ir nurodytas klientas. (17)");
+            System.out.println("spausdinti mokėjimų sumą ir did. maž vertes: (16)");
+            System.out.println("Artimiausias vizitas ir nurodytas klientas: (17)");
             System.out.println("Baigti darbą: (18)");
             int verte = Custom.nuskaitytiIntVerteCon();
             switch (verte){
